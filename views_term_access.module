@@ -1,0 +1,90 @@
+<?php
+	
+	function views_term_access_views_api(){
+		return array(
+			'api'	=> 3,
+		);
+	}
+	
+	function views_term_access_check_terms($tids,$matching='any'){
+		global $user;
+		$matched = 0;
+		if (sizeof($tids)>0){
+			$reference_fields = views_term_access_get_reference_fields();
+			$account = user_load($user->uid);
+			foreach ($reference_fields as $machine_name => $vids){
+				//get field value
+				if ($values = field_get_items('user',$account,$machine_name)){
+					foreach ($values as $delta => $value){
+						if (in_array($value['tid'], $tids)){
+							$matched++;
+						}
+					}
+				}
+			}
+		}
+		
+		if ( (sizeof($tids)==0) ||(($matched > 0) && (($matching == 'any') || (sizeof($tids)==$matched)))){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	function views_term_access_get_user_vocabularies(){
+		$reference_fields = views_term_access_get_reference_fields();
+
+		//get vocabularies
+		$vids = array();
+		foreach ($reference_fields as $ref_vids){
+			$vids=array_merge($vids,array_values($ref_vids));
+		}
+		$vocabularies = taxonomy_vocabulary_load_multiple($vids);
+		
+		$user_vocabularies = array();
+		
+		foreach ($vocabularies as $vid => $vocabulary){
+			if ($tree = taxonomy_get_tree($vid)){
+				//get terms
+				$terms = array();
+				foreach ($tree as $term){
+					$terms[$term->tid] = $term->name;
+				}
+				
+				$fields = array();
+				foreach ($reference_fields as $field_name => $vids){
+					if (in_array($vid,$vids)){
+						$fields[] = $field_name;
+					}
+				}
+				
+				if (sizeof($terms)>0){
+					$user_vocabularies[$vid] = array(
+						'name'	=> $vocabulary->name,
+						'terms'	=> $terms,
+						'fields'=> $fields,
+					);
+				}
+			}
+		}
+		
+		return $user_vocabularies;
+	}
+
+	function views_term_access_get_reference_fields(){
+		//get all user term reference fields
+		$reference_fields = array();
+		$fields_info = field_info_instances('user','user');
+		foreach ($fields_info as $field_name => $value) {
+			$field_info = field_info_field($field_name);
+			$type = $field_info['type'];
+			if ($type == 'taxonomy_term_reference'){
+				foreach ($field_info['settings']['allowed_values'] as $vocab){
+					if (isset($vocab['vocabulary']) && ($vocab = taxonomy_vocabulary_machine_name_load($vocab['vocabulary']))){
+						$reference_fields[$field_name][] = $vocab->vid;
+					}
+				}
+			}
+		}
+		return $reference_fields;
+	}

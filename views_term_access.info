@@ -1,0 +1,9 @@
+name = Views Term Access
+description = A views plugin that restricts access based on term reference
+package = Views
+version = VERSION
+core = 7.x
+dependencies[] = views
+files[] = views_plugin_term_access.inc
+files[] = views_term_access.views.inc
+
