@@ -41,7 +41,7 @@ class views_plugin_access_term extends views_plugin_access {
     $tids = $this->options['tids'];
     //if multiple terms were selected display 'Many Terms'
     if (sizeof($tids)>1) {
-      return t('Many Terms') . ',' . $this->options['term_matching'];
+      return t('Many Terms') . ',' . t($this->options['term_matching']);
     }
     //if single term selected, load term name
     elseif (sizeof($tids) == 1) {
@@ -59,7 +59,7 @@ class views_plugin_access_term extends views_plugin_access {
   function option_definition() {
     $options = parent::option_definition();
     $options['tids'] = array();
-    $options['term_matching'] = 'any';
+    $options['term_matching'] = array('any');
     return $options;
   }
 
@@ -75,7 +75,7 @@ class views_plugin_access_term extends views_plugin_access {
     $form['vocabularies'] = array(
       '#type' => 'fieldset',
       '#title' => t('Vocabularies'),
-      '#description' => t('Select the terms that need to be matched to allow access.')
+      '#description' => t('Select the terms that need to be matched to allow access.'),
     );
     
     //foreach vocabulary create a multi-select field
@@ -93,8 +93,12 @@ class views_plugin_access_term extends views_plugin_access {
     $form['term_matching'] = array(
       '#type'  => 'select',
       '#title'  => t('User must be associated to'),
-      '#options'  => array('all' => 'All Selected Terms', 'any' => 'Any Selected Terms'),
+      '#options'  => array(
+        'all' => t('All Selected Terms'), 
+        'any' => t('Any Selected Terms'),
+       ),
       '#default_value'  => $this->options['term_matching'],
+      '#description'  => t('Only applies for multiple terms.'),
     );
     
     $form['tids'] = array(

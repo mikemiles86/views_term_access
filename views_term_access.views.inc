@@ -14,7 +14,7 @@ function views_term_access_views_plugins() {
         'title'  => 'Term Access',
         'handler'  => 'views_plugin_access_term',
         'uses options'  => TRUE,
-        'help'    => t('Access will be granted by user association to taxonomy terms'),
+        'help'    => 'Access will be granted by user association to taxonomy terms',
       ),
     ),
   );

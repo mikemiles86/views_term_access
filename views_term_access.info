@@ -5,6 +5,7 @@ version = VERSION
 core = 7.x
 dependencies[] = views
 dependencies[] = taxonomy
-files[] = views_plugin_term_access.inc
+files[] = views_plugin_access_term.inc
+files[] = views_term_access.pages.inc
 files[] = views_term_access.views.inc
 
