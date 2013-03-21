@@ -10,7 +10,7 @@
 function views_term_access_views_plugins() {
   $plugins = array(
     'access' => array(
-      'time_access' => array(
+      'term_access' => array(
         'title'  => 'Term Access',
         'handler'  => 'views_plugin_access_term',
         'uses options'  => TRUE,
