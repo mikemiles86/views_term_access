@@ -1,14 +1,15 @@
 <?php
 /**
  * @file
- * Definition of views_plugin_term_access.
+ * Definition of views_plugin_term_access class.
  */
+ 
 /**
  * Access plugin that provides term-based access control.
  *
  * @ingroup views_access_plugins
  */
-class views_plugin_term_access extends views_plugin_access {
+class views_plugin_access_term extends views_plugin_access {
   /**
    * Determine if the current user has access or not.
    */
@@ -79,7 +80,7 @@ class views_plugin_term_access extends views_plugin_access {
     
     //foreach vocabulary create a multi-select field
     foreach ($vocabularies as $vid => $vocabulary) {
-      $form['vocabularies']['v_' . $vid] = array(
+      $form['vocabularies'][$vid] = array(
         '#type' => 'select',
         '#title' => check_plain($vocabulary['name']),
         '#options' => array('' => '') + $vocabulary['terms'],
@@ -112,8 +113,8 @@ class views_plugin_term_access extends views_plugin_access {
     //loop through all of the vocabularies
     foreach ($vocabularies as $vid => $vocabulary) {
       //get selected terms
-      if (array_filter($form_state['values']['access_options']['vocabularies']['v_' . $vid])) {
-        $tids = array_merge($tids, array_keys($form_state['values']['access_options']['vocabularies']['v_' . $vid]));
+      if (array_filter($form_state['values']['access_options']['vocabularies'][$vid])) {
+        $tids = array_merge($tids, array_keys($form_state['values']['access_options']['vocabularies'][$vid]));
       }
     }
     //set selected tids array to be saved.
